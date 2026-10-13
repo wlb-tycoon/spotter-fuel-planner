@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.sqlite3
+.coverage
+staticfiles/
+.cache/
+Email.md
+.ruff_cache/
+job-post-*.md

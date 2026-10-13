@@ -1,0 +1,56 @@
+[
+  {
+    "start": "Dallas, TX",
+    "finish": "Houston, TX",
+    "status": 201,
+    "seconds": 3.82,
+    "distance_miles": 240.2,
+    "cost_usd": "0.00",
+    "stops": 0,
+    "diagnostics": {
+      "candidate_stations": 6,
+      "external_routing_calls": 1,
+      "routing_cache_hits": 0,
+      "station_legs_routed": false,
+      "base_route_miles": 240.17170971526286,
+      "elapsed_ms": 3641
+    },
+    "map_url": "http://testserver/maps/9e5fe46f-30e5-41a8-a53b-c76c0288acd3/"
+  },
+  {
+    "start": "Dallas, TX",
+    "finish": "Los Angeles, CA",
+    "status": 201,
+    "seconds": 8.38,
+    "distance_miles": 1446.1,
+    "cost_usd": "295.64",
+    "stops": 5,
+    "diagnostics": {
+      "candidate_stations": 49,
+      "external_routing_calls": 2,
+      "routing_cache_hits": 0,
+      "station_legs_routed": true,
+      "base_route_miles": 1435.731453312654,
+      "elapsed_ms": 8356
+    },
+    "map_url": "http://testserver/maps/b00bc37e-1966-48cb-b91c-b44e78fe20df/"
+  },
+  {
+    "start": "New York, NY",
+    "finish": "Los Angeles, CA",
+    "status": 201,
+    "seconds": 13.84,
+    "distance_miles": 2812.2,
+    "cost_usd": "770.64",
+    "stops": 14,
+    "diagnostics": {
+      "candidate_stations": 83,
+      "external_routing_calls": 2,
+      "routing_cache_hits": 0,
+      "station_legs_routed": true,
+      "base_route_miles": 2793.91329634932,
+      "elapsed_ms": 13789
+    },
+    "map_url": "http://testserver/maps/e542bb99-6926-4a6b-b897-c2efbea8fd96/"
+  }
+]
