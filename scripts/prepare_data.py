@@ -8,6 +8,7 @@ import json
 import math
 import pathlib
 import re
+import tempfile
 import unicodedata
 import zipfile
 
@@ -102,6 +103,26 @@ def brand(s):
     return None
 
 
+def store_numbers(tags):
+    """Only explicit store identifiers count; road numbers in names do not."""
+    numbers = {int(n) for n in re.findall(r"#\s*(\d+)", tags.get("name", ""))}
+    ref = tags.get("ref", "").strip()
+    if ref.isascii() and ref.isdigit():
+        numbers.add(int(ref))
+    return numbers
+
+
+def identifiers_agree(row, tags):
+    number = re.search(r"#\s*(\d+)", row["Truckstop Name"])
+    known = store_numbers(tags)
+    if number and known and known != {int(number.group(1))}:
+        return False
+    if tags.get("addr:country", "US").upper() not in {"US", "USA"}:
+        return False
+    state = tags.get("addr:state", "").upper()
+    return not state or state not in STATES or state == row["State"]
+
+
 def main():
     if (
         not list((ROOT / ".cache").glob("osm-fuel-*.json"))
@@ -122,9 +143,6 @@ def main():
                     key = f"{norm(n)}, {x[10].lower()}"
                     if key not in cities or cities[key][2] < record[2]:
                         cities[key] = record
-    (ROOT / "data/cities.json").write_text(
-        json.dumps(cities, sort_keys=True, separators=(",", ":"))
-    )
     elements = {}
     for path in (ROOT / ".cache").glob("osm-fuel-*.json"):
         for e in json.loads(path.read_text()).get("elements", []):
@@ -169,6 +187,8 @@ def main():
                     if dist > 18:
                         continue
                     t = e["tags"]
+                    if not identifiers_agree(r, t):
+                        continue
                     score = 0
                     reason = ""
                     names = [norm(t.get("name", "")), norm(t.get("brand", ""))]
@@ -178,13 +198,7 @@ def main():
                         default=0,
                     )
                     if b and b == e["brand"]:
-                        if num and (
-                            num.group(1) == t.get("ref")
-                            or re.search(
-                                r"(?:#|\b)0*" + re.escape(num.group(1)) + r"\b",
-                                t.get("name", ""),
-                            )
-                        ):
+                        if num and int(num.group(1)) in store_numbers(t):
                             score = 100
                             reason = "brand_and_store_number"
                         elif dist < 6 or norm(t.get("addr:city", "")) == norm(r["City"]):
@@ -257,9 +271,6 @@ def main():
                 "confidence": "official_store_number_state",
             }
         unmatched = [row for row in unmatched if row["station_id"] not in matches]
-    (ROOT / "data/station-coordinates.json").write_text(
-        json.dumps(matches, indent=2, sort_keys=True)
-    )
     report = {
         "csv_rows": sum(map(len, groups.values())),
         "unique_ids": len(groups),
@@ -271,7 +282,22 @@ def main():
         "match_methods": dict(collections.Counter(x["confidence"] for x in matches.values())),
         "unmatched": unmatched,
     }
-    (ROOT / "data/import-report.json").write_text(json.dumps(report, indent=2))
+    if not matches:
+        raise SystemExit("No stations matched. Existing prepared data was left unchanged.")
+    outputs = {
+        "cities.json": json.dumps(cities, sort_keys=True, separators=(",", ":")),
+        "station-coordinates.json": json.dumps(matches, indent=2, sort_keys=True),
+        "import-report.json": json.dumps(report, indent=2),
+    }
+    destination = ROOT / "data"
+    destination.mkdir(exist_ok=True)
+    # Complete all parsing and serialization before replacing any prepared file.
+    with tempfile.TemporaryDirectory(dir=destination) as directory:
+        staging = pathlib.Path(directory)
+        for name, content in outputs.items():
+            (staging / name).write_text(content)
+        for name in outputs:
+            (staging / name).replace(destination / name)
     print({k: v for k, v in report.items() if k != "unmatched"})
 
 

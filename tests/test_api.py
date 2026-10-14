@@ -128,3 +128,49 @@ def test_unreachable_actual_leg_is_rejected(route, candidates, resolve, client):
     )
     assert r.status_code == 422
     assert RoutePlan.objects.count() == 0
+
+
+def test_large_body_uses_json_error(client, settings):
+    settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 100
+    response = client.post("/api/v1/route-plans/", data=" " * 200, content_type="application/json")
+    assert response.status_code == 413
+    assert response.json()["error"]["code"] == "body_too_large"
+
+
+def test_deeply_nested_json_is_rejected(client):
+    response = client.post(
+        "/api/v1/route-plans/", data="[" * 2000 + "0" + "]" * 2000, content_type="application/json"
+    )
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] in {"invalid_json", "invalid_body"}
+
+
+@patch("planner.views.json.loads", side_effect=RecursionError)
+def test_parser_recursion_error_returns_json(loads, client):
+    response = client.post("/api/v1/route-plans/", data="[]", content_type="application/json")
+    assert response.status_code == 400
+    assert b"invalid_json" in response.content
+
+
+@patch("planner.service.Router.route")
+def test_identical_endpoints_require_no_provider(route, client):
+    response = client.post(
+        "/api/v1/route-plans/",
+        data=json.dumps({"start": "Dallas, TX", "finish": "Dallas, TX", "initial_fuel_gallons": 0}),
+        content_type="application/json",
+    )
+    assert response.status_code == 201
+    assert response.json()["route"]["distance_miles"] == 0
+    assert response.json()["fuel"]["total_fuel_cost_usd"] == "0.00"
+    route.assert_not_called()
+
+
+def test_map_escapes_untrusted_labels(client):
+    label = "</script><script>alert(1)</script>"
+    record = RoutePlan.objects.create(
+        result={"start": {"label": label}, "finish": {"label": "End"}, "fuel": {"stops": []}}
+    )
+    response = client.get(f"/maps/{record.id}/")
+    assert response.status_code == 200
+    assert label.encode() not in response.content
+    assert b"\\u003C/script\\u003E" in response.content

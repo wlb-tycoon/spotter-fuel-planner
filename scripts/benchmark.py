@@ -33,7 +33,8 @@ for mode in ("cold", "warm"):
     }
     if response.status_code != 201:
         raise SystemExit(data)
-    result.update(data["diagnostics"])
+    result.update({key: value for key, value in data["diagnostics"].items() if key != "elapsed_ms"})
+    result["planning_ms"] = data["diagnostics"]["elapsed_ms"]
     results.append(result)
     print(result, flush=True)
 assert results[1]["external_routing_calls"] == 0

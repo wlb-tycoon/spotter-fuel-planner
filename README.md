@@ -40,7 +40,7 @@ Locations accept `City, ST` strings or `{"latitude":32.7767,"longitude":-96.797}
 
 ## Algorithm and cost accounting
 
-The optimizer minimizes purchases for a **fixed ordered path** with continuous fuel quantities, no stop fee, and constant MPG. At each station, buy enough to reach the next cheaper station within range; if none exists, buy up to tank capacity or the fuel needed to finish. A monotonic stack finds next-cheaper stations in O(n) after sorting. Existing fuel is carried forward. Fuel never exceeds 50 gallons and an unreachable leg produces an error.
+The optimizer minimizes purchases for a **fixed ordered path** with continuous fuel quantities, no stop fee, and constant MPG. At each station, buy enough to reach the next cheaper station within range; if none exists, buy up to tank capacity or the fuel needed to finish. A monotonic stack finds next-cheaper stations in O(n) after sorting. Equal-price purchases are deferred when the next stop remains reachable, avoiding redundant top-ups and excessive route waypoints. Existing fuel is carried forward. Fuel never exceeds 50 gallons and an unreachable leg produces an error.
 
 A full initial tank is assumed because the assignment does not specify starting fuel. **Total cost is money purchased during the trip, excluding the cost of pre-existing fuel.** A trip under 500 miles may therefore cost $0 in new purchases while still consuming fuel. Cost is computed using Decimal. Displayed station purchases are rounded to cents, and the total equals the sum of those displayed charges.
 
@@ -52,7 +52,7 @@ This is **not a proof of minimum cost over all possible road routes or station s
 
 The source CSV has 8,151 observations and 6,738 distinct IDs. It has no coordinates and includes Canadian stations. US records are retained. Original CSV rows are preserved, and prices are the median of observations for an ID: there are no timestamps or fuel-grade labels to justify choosing a latest observation. Prices are assumed USD per US gallon.
 
-`data/station-coordinates.json` contains matched OSM fuel POIs and official Pilot/Flying J locations with source URLs and match reasons. Exact official store-number/state matches take precedence over OSM name matches. GeoNames city coordinates narrow candidate searches; **they are never used as station coordinates**. Matching uses store numbers, distinctive names, or an unambiguous brand near the listed city. These are automated matches, not a guarantee of manual verification. Unresolved/ambiguous records are excluded. See `data/import-report.json` for coverage and exclusions.
+`data/station-coordinates.json` contains matched OSM fuel POIs and official Pilot/Flying J locations with source URLs and match reasons. Exact official store-number/state matches take precedence over OSM name matches. GeoNames city coordinates narrow candidate searches; **they are never used as station coordinates**. Matching uses store numbers, distinctive names, or an unambiguous brand near the listed city. These are automated matches, not a guarantee of manual verification. Explicit store-number, state, and country conflicts are rejected before fuzzy matching. Unresolved/ambiguous records are excluded. See `data/import-report.json` for coverage and exclusions.
 
 Rebuild sources only when necessary:
 
@@ -83,7 +83,7 @@ Station latitude/longitude indexes narrow the candidate set before geometric fil
 
 ## Included data coverage and live examples
 
-The prepared snapshot contains **1,370 of 6,626 US station IDs (20.7%)**, including **594 exact official Pilot/Flying J store-number/state matches**. The remaining matches use OSM store numbers, distinctive names, or an unambiguous nearby brand. All 5,256 unresolved US IDs are listed in the import report; the app does not invent coordinates or promise coverage for every US route. This partial dataset is a material limitation of the submission.
+The prepared snapshot contains **1,376 of 6,626 US station IDs (20.8%)**, including **594 exact official Pilot/Flying J store-number/state matches**. The remaining matches use OSM store numbers, distinctive names, or an unambiguous nearby brand. All 5,250 unresolved US IDs are listed in the import report; the app does not invent coordinates or promise coverage for every US route. This partial dataset is a material limitation of the submission.
 
 Live checks with a full starting tank:
 
@@ -91,7 +91,7 @@ Live checks with a full starting tank:
 |---|---:|---:|---:|---:|
 | Dallas → Houston | 240.2 | $0.00 | 0 | 1 |
 | Dallas → Los Angeles | 1,446.1 | $295.64 | 5 | 2 |
-| New York → Los Angeles | 2,812.2 | $770.64 | 14 | 2 |
+| New York → Los Angeles | 2,810.9 | $770.20 | 12 | 2 |
 
 These are observed outputs, not guarantees; provider routes can change. The cost excludes pre-existing fuel. See `data/smoke-results.json` and `data/benchmark-results.json` for measured results.
 

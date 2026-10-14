@@ -2,21 +2,23 @@
   {
     "mode": "cold",
     "status": 201,
-    "elapsed_ms": 12231,
+    "elapsed_ms": 12332,
     "candidate_stations": 49,
     "external_routing_calls": 2,
     "routing_cache_hits": 0,
     "station_legs_routed": true,
-    "base_route_miles": 1435.731453312654
+    "base_route_miles": 1435.731453312654,
+    "planning_ms": 12063
   },
   {
     "mode": "warm",
     "status": 201,
-    "elapsed_ms": 119,
+    "elapsed_ms": 128,
     "candidate_stations": 49,
     "external_routing_calls": 0,
     "routing_cache_hits": 2,
     "station_legs_routed": true,
-    "base_route_miles": 1435.731453312654
+    "base_route_miles": 1435.731453312654,
+    "planning_ms": 96
   }
 ]

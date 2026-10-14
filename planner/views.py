@@ -1,5 +1,6 @@
 import json
 
+from django.core.exceptions import RequestDataTooBig
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -34,7 +35,11 @@ def create_plan(request):
             },
             status=415,
         )
-    if len(request.body) > 16384:
+    try:
+        body = request.body
+    except RequestDataTooBig:
+        body = None
+    if body is None or len(body) > 16384:
         return JsonResponse(
             {
                 "error": {
@@ -45,9 +50,9 @@ def create_plan(request):
             status=413,
         )
     try:
-        payload = json.loads(request.body)
+        payload = json.loads(body)
         record = plan(payload)
-    except (json.JSONDecodeError, UnicodeDecodeError):
+    except (json.JSONDecodeError, UnicodeDecodeError, RecursionError, ValueError):
         return JsonResponse(
             {"error": {"code": "invalid_json", "message": "Provide valid JSON."}},
             status=400,

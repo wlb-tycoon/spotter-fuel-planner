@@ -14,6 +14,7 @@ import django
 django.setup()
 from django.test import Client
 
+(ROOT / ".cache").mkdir(exist_ok=True)
 client = Client()
 summaries = []
 for start, finish in [
@@ -60,3 +61,6 @@ for start, finish in [
     summaries.append(summary)
     print(summary, flush=True)
 (ROOT / "data/smoke-results.json").write_text(json.dumps(summaries, indent=2))
+
+if any(result["status"] != 201 for result in summaries):
+    raise SystemExit("One or more live route checks failed; see data/smoke-results.json.")

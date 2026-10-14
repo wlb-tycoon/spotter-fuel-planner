@@ -2,19 +2,23 @@
   "csv_rows": 8151,
   "unique_ids": 6738,
   "eligible_us_ids": 6626,
-  "matched_stations": 1370,
-  "unmatched_us_stations": 5256,
+  "matched_stations": 1376,
+  "unmatched_us_stations": 5250,
   "osm_pois": 29238,
   "price_policy": "Median of all source observations per station ID",
   "match_methods": {
-    "brand_and_store_number": 95,
+    "brand_and_store_number": 94,
     "official_store_number_state": 594,
-    "distinctive_name_near_city": 260,
-    "unique_brand_near_city": 421
+    "unique_brand_near_city": 422,
+    "distinctive_name_near_city": 266
   },
   "unmatched": [
     {
       "station_id": "7",
+      "reason": "ambiguous_or_no_match"
+    },
+    {
+      "station_id": "28",
       "reason": "ambiguous_or_no_match"
     },
     {
@@ -2299,10 +2303,6 @@
     },
     {
       "station_id": "5758",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
-      "station_id": "5770",
       "reason": "ambiguous_or_no_match"
     },
     {
@@ -7970,10 +7970,6 @@
       "reason": "ambiguous_or_no_match"
     },
     {
-      "station_id": "66075",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
       "station_id": "66078",
       "reason": "ambiguous_or_no_match"
     },
@@ -9442,10 +9438,6 @@
       "reason": "ambiguous_or_no_match"
     },
     {
-      "station_id": "67221",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
       "station_id": "67223",
       "reason": "ambiguous_or_no_match"
     },
@@ -9675,10 +9667,6 @@
     },
     {
       "station_id": "67366",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
-      "station_id": "67367",
       "reason": "ambiguous_or_no_match"
     },
     {
@@ -12402,6 +12390,10 @@
       "reason": "ambiguous_or_no_match"
     },
     {
+      "station_id": "69396",
+      "reason": "ambiguous_or_no_match"
+    },
+    {
       "station_id": "69399",
       "reason": "ambiguous_or_no_match"
     },
@@ -14027,10 +14019,6 @@
     },
     {
       "station_id": "70305",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
-      "station_id": "70308",
       "reason": "ambiguous_or_no_match"
     },
     {
@@ -16443,10 +16431,6 @@
     },
     {
       "station_id": "71302",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
-      "station_id": "71303",
       "reason": "ambiguous_or_no_match"
     },
     {
@@ -19318,10 +19302,6 @@
       "reason": "ambiguous_or_no_match"
     },
     {
-      "station_id": "72483",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
       "station_id": "72485",
       "reason": "ambiguous_or_no_match"
     },
@@ -20015,10 +19995,6 @@
     },
     {
       "station_id": "72748",
-      "reason": "ambiguous_or_no_match"
-    },
-    {
-      "station_id": "72749",
       "reason": "ambiguous_or_no_match"
     },
     {

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import math
 
 import requests
 from django.conf import settings
@@ -14,7 +15,7 @@ class Router:
         self.cache_hits = 0
 
     def route(self, coordinates):
-        key = "route:" + hashlib.sha256(json.dumps(coordinates).encode()).hexdigest()
+        key = "route:v3:" + hashlib.sha256(json.dumps(coordinates).encode()).hexdigest()
         cached = cache.get(key)
         if cached is not None:
             self.cache_hits += 1
@@ -60,15 +61,37 @@ class Router:
             segments = feature["properties"]["segments"]
             if len(segments) != len(coordinates) - 1:
                 raise ValueError("Unexpected route segment count")
+            geometry = feature["geometry"]
+            points = geometry["coordinates"]
+            if geometry["type"] != "LineString" or not isinstance(points, list) or len(points) < 2:
+                raise ValueError("Invalid route geometry")
+            for point in points:
+                if not isinstance(point, list) or len(point) < 2:
+                    raise ValueError("Invalid coordinate")
+                lon, lat = point[:2]
+                if any(type(v) not in (int, float) or not math.isfinite(v) for v in (lon, lat)):
+                    raise ValueError("Invalid coordinate value")
+                if not -180 <= lon <= 180 or not -90 <= lat <= 90:
+                    raise ValueError("Coordinate out of range")
+            distance = feature["properties"]["summary"]["distance"]
+            duration = feature["properties"]["summary"]["duration"]
+            leg_distances = [segment["distance"] for segment in segments]
+            for value in [distance, duration, *leg_distances]:
+                if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+                    raise ValueError("Invalid route measurement")
+            # Provider distances are rounded to tenths of a metre per segment.
+            if abs(sum(leg_distances) - distance) > max(1, len(segments) * 0.1):
+                raise ValueError("Inconsistent route distances")
+            if distance > 0 and all(point[:2] == points[0][:2] for point in points):
+                raise ValueError("Degenerate route geometry")
+            distance = sum(leg_distances)
             result = {
-                "geometry": feature["geometry"],
-                "distance_miles": feature["properties"]["summary"]["distance"] / 1609.344,
-                "duration_seconds": feature["properties"]["summary"]["duration"],
-                "segments_miles": [
-                    s["distance"] / 1609.344 for s in feature["properties"]["segments"]
-                ],
+                "geometry": geometry,
+                "distance_miles": distance / 1609.344,
+                "duration_seconds": duration,
+                "segments_miles": [distance / 1609.344 for distance in leg_distances],
             }
-        except (KeyError, ValueError, IndexError, TypeError):
+        except (KeyError, ValueError, IndexError, TypeError, OverflowError):
             raise PlanError(
                 "invalid_provider_response",
                 "Routing service returned an invalid response.",

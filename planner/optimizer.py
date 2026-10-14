@@ -10,6 +10,37 @@ MPG = D("10")
 EPS = D("0.000001")
 
 
+def consolidate_equal_price_stops(stops):
+    """Defer equal-price purchases while existing fuel can reach the next stop.
+
+    This preserves cost before cent rounding and avoids a tiny top-up at every
+    same-price station, which could otherwise exceed routing waypoint limits.
+    """
+    result = []
+    deferred = D(0)
+    for i, stop in enumerate(stops):
+        purchase = D(str(stop["gallons_purchased"])) + deferred
+        arrival = D(str(stop["arrival_fuel_gallons"])) - deferred
+        if i + 1 < len(stops):
+            following = stops[i + 1]
+            if (
+                D(str(following["price"])) == D(str(stop["price"]))
+                and D(str(following["arrival_fuel_gallons"])) - purchase >= 0
+            ):
+                deferred = purchase
+                continue
+        result.append(
+            {
+                **stop,
+                "arrival_fuel_gallons": float(max(D(0), arrival)),
+                "gallons_purchased": float(purchase),
+                "cost_usd": str((purchase * D(str(stop["price"]))).quantize(D("0.01"))),
+            }
+        )
+        deferred = D(0)
+    return result
+
+
 def optimize(stations, total_miles, initial_gallons=50):
     end = D(str(total_miles))
     fuel = D(str(initial_gallons))
@@ -67,6 +98,7 @@ def optimize(stations, total_miles, initial_gallons=50):
             "The destination cannot be reached with the available station coverage.",
             422,
         )
+    stops = consolidate_equal_price_stops(stops)
     return {
         "stops": stops,
         "fuel_consumed_gallons": float(end / MPG),

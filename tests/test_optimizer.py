@@ -76,3 +76,21 @@ def test_matches_reference_solver():
                 optimize(ss, total, initial)
         else:
             assert Decimal(optimize(ss, total, initial)["total_fuel_cost_usd"]) == expected
+
+
+def test_equal_price_topups_do_not_exceed_waypoint_limit():
+    result = optimize([station(mile, 3) for mile in range(50, 3000, 50)], 3000)
+    assert len(result["stops"]) == 5
+    assert result["total_fuel_cost_usd"] == "750.00"
+    assert result["fuel_purchased_gallons"] == 250
+    previous_mile = 0
+    fuel = 50
+    for stop in result["stops"]:
+        fuel -= (stop["mile"] - previous_mile) / 10
+        assert fuel >= 0
+        assert stop["arrival_fuel_gallons"] == pytest.approx(fuel)
+        fuel += stop["gallons_purchased"]
+        assert fuel <= 50
+        assert stop["departure_fuel_gallons"] == pytest.approx(fuel)
+        previous_mile = stop["mile"]
+    assert fuel - (3000 - previous_mile) / 10 == pytest.approx(0)

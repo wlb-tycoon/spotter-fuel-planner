@@ -50,7 +50,7 @@ def resolve(value):
                 raise ValueError
             lat = float(value["latitude"])
             lon = float(value["longitude"])
-        except (KeyError, ValueError, TypeError):
+        except (KeyError, ValueError, TypeError, OverflowError):
             raise PlanError(
                 "invalid_location",
                 "Coordinates require numeric latitude and longitude.",

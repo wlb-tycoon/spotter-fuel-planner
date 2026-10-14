@@ -461,12 +461,6 @@
     "longitude": -85.0001267,
     "source": "https://locations.pilotflyingj.com/us/in/fremont/6900-n-old-us-27"
   },
-  "28": {
-    "confidence": "distinctive_name_near_city",
-    "latitude": 35.3543539,
-    "longitude": -94.4263964,
-    "source": "https://www.openstreetmap.org/way/1053649045"
-  },
   "2807": {
     "confidence": "distinctive_name_near_city",
     "latitude": 36.5866679,
@@ -1696,6 +1690,12 @@
     "latitude": 30.64428,
     "longitude": -83.1871784,
     "source": "https://www.openstreetmap.org/way/1010806654"
+  },
+  "5770": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 43.3856433,
+    "longitude": -87.9300065,
+    "source": "https://www.openstreetmap.org/way/826017881"
   },
   "578": {
     "confidence": "unique_brand_near_city",
@@ -3239,6 +3239,12 @@
     "longitude": -84.1158306,
     "source": "https://www.openstreetmap.org/way/225807459"
   },
+  "66075": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 34.4988094,
+    "longitude": -82.0468332,
+    "source": "https://www.openstreetmap.org/way/826988662"
+  },
   "66090": {
     "confidence": "distinctive_name_near_city",
     "latitude": 26.0937493,
@@ -4181,6 +4187,12 @@
     "longitude": -91.1117801,
     "source": "https://www.openstreetmap.org/way/1322056015"
   },
+  "67221": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 43.9894205,
+    "longitude": -88.5857467,
+    "source": "https://www.openstreetmap.org/way/899058639"
+  },
   "67226": {
     "confidence": "brand_and_store_number",
     "latitude": 43.9229632,
@@ -4306,6 +4318,12 @@
     "latitude": 46.8320766,
     "longitude": -96.8448793,
     "source": "https://www.openstreetmap.org/way/225056492"
+  },
+  "67367": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 43.5750958,
+    "longitude": -90.8882119,
+    "source": "https://www.openstreetmap.org/node/2397971801"
   },
   "67381": {
     "confidence": "distinctive_name_near_city",
@@ -5212,12 +5230,6 @@
     "latitude": 39.9924723,
     "longitude": -85.8439254,
     "source": "https://www.openstreetmap.org/node/6308702367"
-  },
-  "69396": {
-    "confidence": "distinctive_name_near_city",
-    "latitude": 35.9598827,
-    "longitude": -85.0408872,
-    "source": "https://www.openstreetmap.org/node/9233378671"
   },
   "69397": {
     "confidence": "brand_and_store_number",
@@ -6263,6 +6275,12 @@
     "longitude": -92.9821014,
     "source": "https://www.openstreetmap.org/relation/18046227"
   },
+  "70308": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 44.666111,
+    "longitude": -88.229266,
+    "source": "https://www.openstreetmap.org/way/744214958"
+  },
   "70309": {
     "confidence": "official_store_number_state",
     "latitude": 32.1207164,
@@ -7019,6 +7037,12 @@
     "longitude": -84.1071184,
     "source": "https://www.openstreetmap.org/node/8813073085"
   },
+  "71303": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 43.9894205,
+    "longitude": -88.5857467,
+    "source": "https://www.openstreetmap.org/way/899058639"
+  },
   "71307": {
     "confidence": "distinctive_name_near_city",
     "latitude": 37.0021901,
@@ -7224,7 +7248,7 @@
     "source": "https://locations.pilotflyingj.com/us/ny/fultonville/164-riverside-dr"
   },
   "71582": {
-    "confidence": "brand_and_store_number",
+    "confidence": "unique_brand_near_city",
     "latitude": 34.7986947,
     "longitude": -80.4054385,
     "source": "https://www.openstreetmap.org/node/9965048105"
@@ -7613,6 +7637,12 @@
     "longitude": -93.8073055,
     "source": "https://www.openstreetmap.org/node/794711505"
   },
+  "72483": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 38.741594,
+    "longitude": -85.8138301,
+    "source": "https://www.openstreetmap.org/way/823985901"
+  },
   "72487": {
     "confidence": "official_store_number_state",
     "latitude": 26.1602683,
@@ -7774,6 +7804,12 @@
     "latitude": 44.0020129,
     "longitude": -75.9211687,
     "source": "https://www.openstreetmap.org/node/11700067709"
+  },
+  "72749": {
+    "confidence": "distinctive_name_near_city",
+    "latitude": 44.8198114,
+    "longitude": -87.3995248,
+    "source": "https://www.openstreetmap.org/node/12986979998"
   },
   "72757": {
     "confidence": "unique_brand_near_city",
